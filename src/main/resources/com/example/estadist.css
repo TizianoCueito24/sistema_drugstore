@@ -1,0 +1,57 @@
+.titulo-principal {
+    -fx-font-size: 20px;
+    -fx-text-fill: #2c3e50; /* Azul oscuro */
+    -fx-padding: 0 0 15px 0; /* Espacio inferior */
+}
+
+.seccion-estadisticas {
+    -fx-background-color: #f8f9fa; /* Un gris muy claro */
+    -fx-border-color: #dee2e6; /* Borde gris claro */
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 20px;
+}
+
+.titulo-seccion {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e; /* Azul grisáceo */
+    -fx-padding-bottom: 10px;
+    -fx-border-width: 0 0 1px 0; /* Línea inferior */
+    -fx-border-color: #bdc3c7; /* Gris más claro */
+}
+
+.texto-valor-estadistica {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #27ae60; /* Verde */
+}
+
+.texto-valor-total {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2980b9; /* Azul */
+}
+.texto-valor-ganancia {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    /* El color se pondrá dinámicamente en Java (verde o rojo) */
+    /* -fx-text-fill: #16a085; */ /* Verde azulado como base si no se pone dinámico */
+}
+
+.texto-valor-ganancia-total {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+     /* El color se pondrá dinámicamente en Java (verde o rojo) */
+    /* -fx-text-fill: #1abc9c; */ /* Verde más brillante como base */
+}
+
+.boton-refrescar { /* Si usas esta clase en lugar de boton-principal */
+    -fx-background-color: #3498db; /* Azul */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.boton-refrescar:hover {
+    -fx-background-color: #2980b9; /* Azul más oscuro al pasar el mouse */
+}

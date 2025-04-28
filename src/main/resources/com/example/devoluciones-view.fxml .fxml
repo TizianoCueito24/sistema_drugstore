@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.drugstore2.controller.DevolucionesController">
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+    </padding>
+    <children>
+        <Label text="Registrar Devolución de Producto" styleClass="titulo-principal" />
+        <GridPane hgap="15.0" vgap="10.0" alignment="CENTER" maxWidth="600.0">
+            <columnConstraints>
+                <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="130.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="Código Producto:" />
+                <TextField fx:id="devolucionCodigoField" onAction="#handleCodigoEntered" promptText="Ingresar o escanear código del producto devuelto" GridPane.columnIndex="1" />
+                <Label fx:id="nombreProductoLabel" text="" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Cantidad Devuelta:" GridPane.rowIndex="2" />
+                <Spinner fx:id="devolucionCantidadSpinner" editable="true" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label text="Motivo:" GridPane.rowIndex="3" />
+                <TextField fx:id="devolucionMotivoField" promptText="Motivo de la devolución (opcional)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+        <Button fx:id="registrarDevolucionButton" mnemonicParsing="false" onAction="#handleRegistrarDevolucion" styleClass="boton-exito" text="✔️ Registrar Devolución" />
+    </children>
+</VBox>

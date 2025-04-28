@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.drugstore2.controller.HistorialVentasController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="Historial de Ventas Registradas" styleClass="titulo-seccion" />
+        <TableView fx:id="historialTableView" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="fechaCol" prefWidth="160.0" text="Fecha/Hora" />
+                <TableColumn fx:id="detalleCol" prefWidth="250.0" text="Producto" />
+                <TableColumn fx:id="cantidadCol" prefWidth="75.0" text="Cantidad" style="-fx-alignment: CENTER;"/>
+                <TableColumn fx:id="totalCol" prefWidth="100.0" text="Subtotal" style="-fx-alignment: CENTER-RIGHT;" />
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <placeholder>
+                <Label text="No hay ventas registradas o no se han cargado." />
+            </placeholder>
+        </TableView>
+        <Button fx:id="recargarHistorialBtn" mnemonicParsing="false" onAction="#handleRecargarHistorial" text="Recargar Historial" />
+    </children>
+</VBox>
