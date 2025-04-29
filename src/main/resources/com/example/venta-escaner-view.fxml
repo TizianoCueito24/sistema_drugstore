@@ -55,8 +55,11 @@
                         <TextField fx:id="nombreSearchField" promptText="Escriba parte del nombre..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     </children>
                 </GridPane>
-                <ListView fx:id="searchResultsListView" managed="false" prefHeight="180.0" visible="false" VBox.vgrow="SOMETIMES">
-                    <placeholder><Label/></placeholder> </ListView>
+                <ListView fx:id="searchResultsListView" managed="false" prefHeight="180.0" visible="false" VBox.vgrow="SOMETIMES"
+                          onMouseClicked="#handleSearchResultSelected"
+                          onKeyPressed="#handleSearchResultKeyPressed">
+                    <placeholder><Label/></placeholder>
+                </ListView>
             </children>
         </VBox>
     </children>
