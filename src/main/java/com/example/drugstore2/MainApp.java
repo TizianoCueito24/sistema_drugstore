@@ -81,9 +81,10 @@ public class MainApp extends Application {
         }
 
 
-        primaryStage.setTitle("Sistema de Inventario y Ventas - Drugstore Refactorizado");
+        primaryStage.setTitle("Drugstore System");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> closeServices());
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

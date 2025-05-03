@@ -1,5 +1,7 @@
 package com.example.drugstore2.controller;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid; // Usaremos los sólidos (hay Regular, Brands)
 import com.example.drugstore2.model.Producto;
 import com.example.drugstore2.service.InventarioService;
 import com.example.drugstore2.util.AlertUtil;
@@ -53,9 +55,18 @@ public class StockController {
     public void initialize() {
         // El servicio se inyecta desde MainApp
         configurarTabla();
-        configurarValidadores(); // Configurar validadores numéricos
-        limpiarFormularioStock(); // Estado inicial
-        // Los datos se cargan cuando se inyecta el servicio o al seleccionar la pestaña
+        configurarValidadores();
+        limpiarFormularioStock();
+        setupIcons();
+        limpiarFormularioStock();
+
+    }
+    private void setupIcons() {
+        agregarButton.setGraphic(new FontIcon(FontAwesomeSolid.PLUS));
+        modificarButton.setGraphic(new FontIcon(FontAwesomeSolid.SAVE)); // O PENCIL_ALT
+        desactivarButton.setGraphic(new FontIcon(FontAwesomeSolid.TRASH_ALT));
+        limpiarButton.setGraphic(new FontIcon(FontAwesomeSolid.BROOM)); // O TIMES_CIRCLE
+        ajustarStockButton.setGraphic(new FontIcon(FontAwesomeSolid.CHECK));
     }
 
     public void setInventarioService(InventarioService service) {
@@ -474,4 +485,5 @@ public class StockController {
     private double parseDouble(String value) throws ParseException {
         return numberFormat.parse(value.trim()).doubleValue();
     }
+
 }

@@ -1,23 +1,137 @@
-.root {
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-background-color: #f0f4f8;
-}
+/* --- Estilos Mejorados para Botones de Venta --- */
 
-.button.boton-principal {
-    -fx-background-color: #3498db;
+.button.boton-exito { /* Para el botón "Confirmar Venta" */
+    -fx-background-color: linear-gradient(to bottom, #2ecc71, #27ae60); /* Gradiente verde */
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-background-radius: 10;
+    -fx-background-radius: 20; /* Bordes bien redondeados (ajusta al gusto) */
+    -fx-padding: 10px 20px;   /* Más padding para que no se vea apretado */
     -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 2, 2); /* Sombra sutil */
+    /* Propiedades para iconos (si usas Ikonli) */
+    -fx-graphic-text-gap: 8px;
+    -fx-alignment: center; /* Centrar icono y texto */
 }
 
-.label {
-    -fx-font-size: 13px;
+.button.boton-exito:hover {
+    -fx-background-color: linear-gradient(to bottom, #3fe081, #2cc06a); /* Verde más brillante al pasar el mouse */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 3, 3); /* Sombra un poco más pronunciada */
 }
 
-.table-view {
-    -fx-border-color: #ccc;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+.button.boton-exito:pressed {
+    -fx-background-color: #27ae60; /* Verde más oscuro al presionar */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 1, 1); /* Sombra reducida */
+}
+
+
+.button.boton-peligro { /* Para el botón "Limpiar Ticket" */
+    -fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b); /* Gradiente rojo */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20; /* Bordes bien redondeados */
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 2, 2);
+    /* Propiedades para iconos (si usas Ikonli) */
+    -fx-graphic-text-gap: 8px;
+    -fx-alignment: center;
+}
+
+.button.boton-peligro:hover {
+    -fx-background-color: linear-gradient(to bottom, #f16a5c, #d14f3f); /* Rojo más brillante al pasar el mouse */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 3, 3);
+}
+
+.button.boton-peligro:pressed {
+    -fx-background-color: #c0392b; /* Rojo más oscuro al presionar */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 1, 1);
+}
+
+/* --- Asegúrate que el estilo base del botón no interfiera --- */
+/* Si tienes una regla general .button, asegúrate que no sobreescriba el radio o efectos */
+.button {
+    /* ... otros estilos base ... */
+    -fx-background-radius: 5; /* Un radio base pequeño por defecto para otros botones */
+     /* Ajusta el padding base si es necesario para botones sin estilo específico */
+    -fx-padding: 5px 15px;
+}
+
+/* --- (Opcional) Estilos para los iconos dentro de estos botones --- */
+/* Si estás usando Ikonli, esto asegura que el icono sea blanco */
+.button.boton-exito .ikonli-font-icon,
+.button.boton-peligro .ikonli-font-icon {
+    -fx-icon-color: white;
+}
+.tab-pane .tab {
+    -fx-background-color: #EAEAEA; /* Gris claro por defecto */
+    -fx-padding: 5px 15px 5px 15px; /* Espaciado interno */
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5 5 0 0; /* Esquinas superiores redondeadas */
+    -fx-border-color: transparent; /* Sin borde por defecto */
+    -fx-border-width: 0 0 3px 0; /* Borde inferior de 3px reservado */
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #FFFFFF; /* Blanco cuando está seleccionada */
+    -fx-border-color: #007bff; /* Borde inferior azul cuando está seleccionada */
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: #F5F5F5; /* Gris un poco más claro al pasar el ratón */
+}
+
+/* --- Colores específicos por pestaña --- */
+
+/* Venta con Escáner */
+.tab.tab-venta-escaner { -fx-background-color: #cce5ff; } /* Azul claro */
+.tab.tab-venta-escaner:selected { -fx-background-color: #e6f2ff; -fx-border-color: #0069d9; }
+
+/* Venta Manual */
+.tab.tab-venta-manual { -fx-background-color: #d4edda; } /* Verde claro */
+.tab.tab-venta-manual:selected { -fx-background-color: #eaf6ec; -fx-border-color: #218838; }
+
+/* Gestión de Stock */
+.tab.tab-stock { -fx-background-color: #fff3cd; } /* Amarillo claro */
+.tab.tab-stock:selected { -fx-background-color: #fff9e6; -fx-border-color: #e0a800; }
+
+/* Historial Ventas */
+.tab.tab-historial { -fx-background-color: #e2d9f3; } /* Púrpura claro */
+.tab.tab-historial:selected { -fx-background-color: #f0ebf9; -fx-border-color: #563d7c; }
+
+/* Estadísticas */
+.tab.tab-estadisticas { -fx-background-color: #f8d7da; } /* Rojo claro */
+.tab.tab-estadisticas:selected { -fx-background-color: #fce Lúnea no completada, asumo un error tipográfico - Corrijo a #fce8e6; -fx-border-color: #c82333; }
+
+/* Devoluciones */
+.tab.tab-devoluciones { -fx-background-color: #d1ecf1; } /* Cyan claro */
+.tab.tab-devoluciones:selected { -fx-background-color: #e2f6f8; -fx-border-color: #117a8b; }
+
+/* Gestión de Caja */
+.tab.tab-caja { -fx-background-color: #ffeeba; } /* Naranja muy claro / amarillo */
+.tab.tab-caja:selected { -fx-background-color: #fff8e1; -fx-border-color: #ffc107; }
+
+/* (Opcional) Ajustar color del texto de las pestañas si es necesario */
+.tab .tab-label {
+    -fx-text-fill: #333; /* Texto oscuro para buen contraste */
+}
+
+.tab:selected .tab-label {
+    -fx-font-weight: bold; /* Texto en negrita para la pestaña seleccionada */
+}
+
+
+/* Estilo para las etiquetas de la pestaña Venta Escaner */
+.label-venta-escaner {
+    -fx-font-size: 13px; /* Tamaño de letra un poco más grande para la etiqueta */
+    /* -fx-font-weight: bold; */ /* Puedes descomentar si quieres negrita */
+    -fx-padding: 0 0 3px 0; /* Un poco de espacio debajo de la etiqueta */
+}
+
+/* Estilo para los campos de texto usando su ID */
+#codigoInput,
+#nombreSearchField {
+    -fx-font-size: 14px; /* Tamaño de letra más grande para el campo de texto */
+    /* -fx-pref-height: 35px; */ /* Opcional: Aumenta la altura del campo */
 }

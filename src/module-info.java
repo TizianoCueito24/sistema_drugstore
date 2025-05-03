@@ -10,6 +10,8 @@ module com.example.drugstore2 {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome5;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
@@ -25,7 +27,10 @@ module com.example.drugstore2 {
     // Abrir paquetes a JavaFX FXML para reflexión
     opens com.example.drugstore2 to javafx.fxml;
     opens com.example.drugstore2.controller to javafx.fxml;
-    opens com.example.drugstore2.model to javafx.base; // Para PropertyValueFactory en modelos
+    opens com.example.drugstore2.model to javafx.base;
+    opens com.example.drugstore2 to javafx.fxml;
+    opens com.example.drugstore2.controller to javafx.fxml;
+    opens com.example.drugstore2.model to javafx.base;
 
     // Exportar paquete principal (y otros si es necesario)
     exports com.example.drugstore2;
@@ -33,4 +38,8 @@ module com.example.drugstore2 {
     exports com.example.drugstore2.model;
     exports com.example.drugstore2.service;
     exports com.example.drugstore2.util;
+
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome5; // Módulo específico para FontAwesome 5
+
 }

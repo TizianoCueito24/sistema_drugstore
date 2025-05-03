@@ -39,54 +39,57 @@ public class VentaService {
      * @param productos La lista de todos los productos (instancias individuales) en la venta.
      * @return true si la venta se registró exitosamente, false en caso contrario.
      */
+    // Dentro de la clase VentaService
+
     public boolean guardarVenta(List<Producto> productos) {
         if (productos == null || productos.isEmpty()) {
             System.out.println("Intento de guardar venta vacía.");
-            return false; // No hay nada que guardar
+            return false;
         }
         if (connection == null) {
             System.err.println("Error: No se puede guardar la venta, no hay conexión a la BD.");
             return false;
         }
 
-        // --- 1. Agrupar productos y calcular total ---
+        // --- 1. Agrupar productos y calcular total (Sin cambios) ---
         Map<String, DetalleVenta> detallesAgrupados = new HashMap<>();
         double totalVentaCalculado = 0.0;
-
+        // ... (lógica de agrupación igual que antes) ...
         for (Producto p : productos) {
-            String codigoKey = p.getCodigo(); // Usar código como clave para agrupar
-            // Si ya existe, incrementa cantidad; si no, crea nuevo detalle
+            String codigoKey = p.getCodigo();
+            if (p instanceof ProductoManual) {
+                // Usar código fijo 'MANUAL' + nombre específico para agrupar iguales manuales
+                codigoKey = "MANUAL_" + p.getNombre() + "_" + p.getPrecioVenta();
+            }
             DetalleVenta detalleExistente = detallesAgrupados.get(codigoKey);
             if (detalleExistente != null) {
-                // Crea un nuevo objeto DetalleVenta con cantidad incrementada
-                // (DetalleVenta es inmutable si no tiene setters para cantidad)
                 int nuevaCantidad = detalleExistente.getCantidad() + 1;
                 detallesAgrupados.put(codigoKey, new DetalleVenta(p, nuevaCantidad));
             } else {
                 detallesAgrupados.put(codigoKey, new DetalleVenta(p, 1));
             }
-            totalVentaCalculado += p.getPrecioVenta(); // Sumar al total general
+            totalVentaCalculado += p.getPrecioVenta();
         }
 
+
         LocalDateTime fechaHora = LocalDateTime.now();
-        Timestamp fechaHoraSql = Timestamp.valueOf(fechaHora); // Convertir a Timestamp para SQL
+        Timestamp fechaHoraSql = Timestamp.valueOf(fechaHora);
 
         PreparedStatement ventaStmt = null;
         PreparedStatement detalleStmt = null;
         ResultSet generatedKeys = null;
 
         try {
-            // --- 2. Iniciar Transacción ---
+            // --- 2. Iniciar Transacción (Sin cambios) ---
             connection.setAutoCommit(false);
 
-            // --- 3. Guardar Venta General ---
+            // --- 3. Guardar Venta General (Sin cambios) ---
             String sqlVenta = "INSERT INTO ventas (fecha_hora, total) VALUES (?, ?)";
             ventaStmt = connection.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS);
             ventaStmt.setTimestamp(1, fechaHoraSql);
             ventaStmt.setDouble(2, totalVentaCalculado);
             ventaStmt.executeUpdate();
 
-            // Obtener el ID generado para la venta
             generatedKeys = ventaStmt.getGeneratedKeys();
             int ventaId;
             if (generatedKeys.next()) {
@@ -96,56 +99,66 @@ public class VentaService {
             }
 
             // --- 4. Guardar Detalles y Actualizar Stock ---
-            String sqlDetalle = "INSERT INTO detalle_ventas (venta_id, producto_codigo, cantidad, subtotal) VALUES (?, ?, ?, ?)";
+            //   **** MODIFICACIÓN AQUÍ: Añadir la nueva columna al INSERT ****
+            String sqlDetalle = "INSERT INTO detalle_ventas (venta_id, producto_codigo, cantidad, subtotal, descripcion_manual) VALUES (?, ?, ?, ?, ?)";
             detalleStmt = connection.prepareStatement(sqlDetalle);
 
             for (DetalleVenta detalle : detallesAgrupados.values()) {
                 Producto productoDetalle = detalle.getProducto();
                 int cantidadVendida = detalle.getCantidad();
-                double subtotalDetalle = detalle.getSubtotal(); // Ya calculado por DetalleVenta
+                double subtotalDetalle = detalle.getSubtotal();
 
-                // i. Insertar detalle
+                // i. Insertar detalle (parámetros base)
                 detalleStmt.setInt(1, ventaId);
-                detalleStmt.setString(2, productoDetalle.getCodigo()); // Guarda el código (real o 'MANUAL-xxx')
+                // Usar el código real ('MANUAL' o el código del producto)
+                detalleStmt.setString(2, productoDetalle.getCodigo());
                 detalleStmt.setInt(3, cantidadVendida);
                 detalleStmt.setDouble(4, subtotalDetalle);
-                detalleStmt.addBatch(); // Agrega la inserción al batch
 
-                // ii. Actualizar Stock (SOLO si no es manual)
+                // ---> NUEVO: Establecer valor para descripcion_manual <---
+                if (productoDetalle instanceof ProductoManual) {
+                    // Si es manual, guarda el nombre específico introducido
+                    detalleStmt.setString(5, productoDetalle.getNombre());
+                } else {
+                    // Si es producto normal, deja la descripción manual como NULL
+                    detalleStmt.setNull(5, Types.VARCHAR);
+                }
+                // ---> FIN NUEVO <---
+
+                detalleStmt.addBatch(); // Añadir a ejecución por lotes
+
+                // ii. Actualizar Stock (SOLO si no es manual) - Sin cambios aquí
                 if (!(productoDetalle instanceof ProductoManual)) {
-                    // Llamamos a actualizar stock con cantidad negativa
                     boolean stockActualizado = inventarioService.actualizarStock(productoDetalle.getCodigo(), -cantidadVendida);
                     if (!stockActualizado) {
-                        // Si actualizarStock devolviera false por algún motivo (ej: stock insuficiente si lo validara allí)
-                        throw new SQLException("No se pudo actualizar el stock para el producto: " + productoDetalle.getCodigo());
-                        // O podríamos añadir validación de stock aquí antes de insertar detalles si es necesario
+                        throw new SQLException("No se pudo actualizar el stock para el producto: " + productoDetalle.getCodigo() + ". Venta revertida.");
                     }
                 }
             }
-            // Ejecutar todas las inserciones de detalles en batch
+            // Ejecutar todas las inserciones de detalles
             detalleStmt.executeBatch();
 
-            // --- 5. Confirmar Transacción ---
+            // --- 5. Confirmar Transacción (Sin cambios) ---
             connection.commit();
             System.out.println("✅ Venta registrada exitosamente en BD (ID: " + ventaId + ")");
 
-            // --- 6. Limpiar historial en memoria y recargar ---
-            // Ya no añadimos manualmente a historialVentas.
-            // La tabla de historial se actualizará la próxima vez que se carguen los datos.
-            // Podríamos forzar la recarga si la pestaña de historial está visible,
-            // pero por simplicidad, dejamos que se recargue al seleccionarla o al reiniciar.
-            // Opcional: Forzar recarga inmediata (puede ser menos eficiente)
-            // cargarHistorialDesdeDB();
+            // --- 6. ACTUALIZAR HISTORIAL EN MEMORIA (Sin cambios) ---
+            System.out.println("-> Actualizando lista de historial en memoria...");
+            cargarHistorialDesdeDB();
+            System.out.println("-> Lista de historial actualizada.");
 
             return true; // Éxito
 
         } catch (SQLException e) {
+            // ---> MEJORADO: Log más detallado del error <---
             System.err.println("❌ Error SQL al guardar la venta: " + e.getMessage());
-            e.printStackTrace();
-            // --- 5. Revertir Transacción en caso de error ---
+            e.printStackTrace(); // Imprime toda la traza del error
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("ErrorCode: " + e.getErrorCode());
+            // ---> FIN MEJORADO <---
             try {
                 if (connection != null) {
-                    System.err.println("Intentando hacer rollback de la transacción...");
+                    System.err.println("Intentando hacer rollback...");
                     connection.rollback();
                     System.err.println("Rollback completado.");
                 }
@@ -156,7 +169,7 @@ public class VentaService {
             return false; // Falla
 
         } finally {
-            // Cerrar recursos y restaurar auto-commit
+            // --- Cerrar recursos y restaurar auto-commit (Sin cambios) ---
             try { if (generatedKeys != null) generatedKeys.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (ventaStmt != null) ventaStmt.close(); } catch (SQLException e) { e.printStackTrace(); }
             try { if (detalleStmt != null) detalleStmt.close(); } catch (SQLException e) { e.printStackTrace(); }
@@ -165,10 +178,12 @@ public class VentaService {
                     connection.setAutoCommit(true);
                 }
             } catch (SQLException e) {
+                System.err.println("Error al restaurar auto-commit: " + e.getMessage());
                 e.printStackTrace();
             }
         }
-    }
+    } // Fin del método guardarVenta // Fin del método guardarVenta
+
 
     // Método para obtener el historial (sigue igual, lee de la lista)
     public ObservableList<Venta> getHistorialVentas() {
@@ -180,18 +195,21 @@ public class VentaService {
 
     // Cargar (o recargar) historial desde la Base de Datos
     // Este método es AHORA la única fuente de datos para el historial
+    // Dentro de la clase VentaService
+
     private void cargarHistorialDesdeDB() {
-        // Limpiar lista actual antes de cargar para evitar duplicados si se llama de nuevo
         historialVentas.clear();
 
-        // La consulta SQL asume que quieres ver cada línea de detalle como una entrada separada
-        // en el historial, lo cual coincide con la estructura de la clase Venta actual.
+        // **** MODIFICACIÓN AQUÍ: Cambiar cómo se obtiene el nombre del producto ****
         String sql = "SELECT v.fecha_hora, dv.cantidad, dv.subtotal, dv.producto_codigo, " +
-                "COALESCE(p.nombre, dv.producto_codigo) AS nombre_producto, " + // Usa nombre de producto si existe, si no el código (para manuales)
-                "COALESCE(p.precio_venta, dv.subtotal / dv.cantidad) AS precio_unitario " + // Calcula precio si no está en productos
+                // Seleccionar el nombre: Prioridad a descripcion_manual, luego nombre del producto, y si no, el código
+                "COALESCE(dv.descripcion_manual, p.nombre, dv.producto_codigo) AS nombre_a_mostrar, " +
+                // Obtener precio unitario (sin cambios)
+                "COALESCE(p.precio_venta, dv.subtotal / dv.cantidad) AS precio_unitario " +
                 "FROM ventas v " +
                 "JOIN detalle_ventas dv ON v.id = dv.venta_id " +
-                "LEFT JOIN productos p ON dv.producto_codigo = p.codigo " + // LEFT JOIN para incluir detalles cuyo código no esté en productos (manuales)
+                // LEFT JOIN con productos sigue siendo útil para obtener nombre/precio de productos de inventario
+                "LEFT JOIN productos p ON dv.producto_codigo = p.codigo " +
                 "ORDER BY v.fecha_hora DESC";
 
         if (connection == null) {
@@ -202,35 +220,22 @@ public class VentaService {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            // Usamos un formateador más flexible si el formato de BD varía
-            // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // Ajustar al formato real de tu BD
-
             while (rs.next()) {
-                // Leer fecha/hora desde Timestamp para mayor precisión
                 Timestamp ts = rs.getTimestamp("fecha_hora");
                 LocalDateTime fechaHora = (ts != null) ? ts.toLocalDateTime() : null;
 
-                String nombre = rs.getString("nombre_producto");
-                String codigo = rs.getString("producto_codigo");
+                // **** USA EL NUEVO ALIAS para obtener el nombre correcto ****
+                String nombreMostrado = rs.getString("nombre_a_mostrar");
+                String codigo = rs.getString("producto_codigo"); // El código se mantiene
                 double precio = rs.getDouble("precio_unitario");
                 int cantidad = rs.getInt("cantidad");
 
-                // Crear un objeto Producto temporal para el historial
-                // No necesitamos el stock real aquí, podemos poner 0 o la cantidad vendida.
-                // Tampoco necesitamos la categoría aquí.
-                Producto productoHistorial;
-                if (codigo.startsWith("MANUAL-")) {
-                    productoHistorial = new ProductoManual(nombre, precio);
-                    // Sobreescribir código por si el hash cambia o no es útil mostrarlo
-                    // productoHistorial.codigoProperty().set(codigo); // Opcional
-                } else {
-
-                    productoHistorial = new Producto(codigo, nombre, precio, 0.0, 0, null, 0);
-                }
+                // Crear objeto Producto temporal para el historial.
+                // Usamos el nombreMostrado que ya tiene la lógica de COALESCE.
+                Producto productoHistorial = new Producto(codigo, nombreMostrado, precio, 0.0, 0, null, 0);
 
                 DetalleVenta detalle = new DetalleVenta(productoHistorial, cantidad);
 
-                // Crear objeto Venta (que representa una línea del historial)
                 if (fechaHora != null) {
                     historialVentas.add(new Venta(fechaHora, detalle));
                 } else {
@@ -245,7 +250,7 @@ public class VentaService {
             System.err.println("❌ Error inesperado al cargar historial desde BD: " + e.getMessage());
             e.printStackTrace();
         }
-    }
+    } // Fin del método cargarHistorialDesdeDB
 
 
 

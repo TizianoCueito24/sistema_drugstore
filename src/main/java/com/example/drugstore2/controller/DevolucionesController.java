@@ -1,7 +1,7 @@
 package com.example.drugstore2.controller;
 
-import com.example.drugstore2.service.InventarioService;
 import com.example.drugstore2.model.Producto;
+import com.example.drugstore2.service.InventarioService;
 import com.example.drugstore2.util.AlertUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

@@ -1,4 +1,5 @@
 package com.example.drugstore2.controller;
+
 import com.example.drugstore2.model.CategoriaVenta;
 import com.example.drugstore2.model.Producto;
 import com.example.drugstore2.model.Venta;

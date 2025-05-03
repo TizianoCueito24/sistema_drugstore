@@ -79,33 +79,53 @@ public class EstadisticasService {
         return gananciaBruta;
     }
     public Map<String, Double> getVentasPorCategoria(LocalDate inicio, LocalDate fin) {
-        Map<String, Double> ventasCategoria = new LinkedHashMap<>();
-        String sql = "SELECT COALESCE(c.nombre, 'Sin Categoría') AS categoria_nombre, SUM(dv.subtotal) AS total_categoria " +
-                "FROM detalle_ventas dv " +
-                "JOIN ventas v ON dv.venta_id = v.id " +
-                "LEFT JOIN productos p ON dv.producto_codigo = p.codigo " +
-                "LEFT JOIN categorias c ON p.categoria_id = c.id " +
-                "WHERE DATE(v.fecha_hora) BETWEEN ? AND ? " +
-                "GROUP BY categoria_nombre " +
-                "ORDER BY categoria_nombre";
+        Map<String, Double> ventasCategoria = new LinkedHashMap<>(); // Usar LinkedHashMap para mantener orden
+
+        // ----- NUEVA CONSULTA SQL -----
+        String sql = "SELECT " +
+                "    CASE " +
+                "        WHEN dv.producto_codigo = 'MANUAL' THEN 'Otros' " + // Si el código es 'MANUAL', categoría es 'Otros'
+                "        ELSE COALESCE(c.nombre, 'Sin Categoría') " + // Si no, usa la categoría del producto o 'Sin Categoría'
+                "    END AS categoria_final, " + // Nombre de la columna resultante
+                "    SUM(dv.subtotal) AS total_categoria " + // Suma de subtotales
+                "FROM " +
+                "    detalle_ventas dv " +
+                "JOIN " +
+                "    ventas v ON dv.venta_id = v.id " +
+                // Se sigue necesitando LEFT JOIN para obtener la categoría de productos NO manuales
+                "LEFT JOIN " +
+                "    productos p ON dv.producto_codigo = p.codigo " +
+                "LEFT JOIN " +
+                "    categorias c ON p.categoria_id = c.id " +
+                "WHERE " +
+                "    DATE(v.fecha_hora) BETWEEN ? AND ? " + // Filtro de fecha
+                "GROUP BY " +
+                "    categoria_final " + // Agrupar por el nombre de categoría calculado
+                "ORDER BY " +
+                "    categoria_final"; // Ordenar alfabéticamente por categoría
+
+        // ----- FIN NUEVA CONSULTA SQL -----
+
+
         if (connection == null || inicio == null || fin == null || fin.isBefore(inicio)) {
             System.err.println("⚠️ Parámetros inválidos para getVentasPorCategoria.");
             return ventasCategoria; // Devuelve mapa vacío
         }
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(inicio));
             stmt.setDate(2, Date.valueOf(fin));
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String categoria = rs.getString("categoria_nombre");
+                // Usar el alias 'categoria_final' que definimos en la consulta CASE
+                String categoria = rs.getString("categoria_final");
                 double total = rs.getDouble("total_categoria");
                 ventasCategoria.put(categoria, total);
             }
         } catch (SQLException e) {
             System.err.println("❌ Error SQL al obtener ventas por categoría: " + e.getMessage());
             e.printStackTrace();
-            // Devolvemos el mapa posiblemente parcialmente lleno o vacío en caso de error
         }
         return ventasCategoria;
     }

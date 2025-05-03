@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.drugstore2.controller.StockController" spacing="15.0" style="-fx-padding: 20;">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.drugstore2.controller.StockController" spacing="15.0" style="-fx-padding: 20;" alignment="TOP_LEFT">
     <children>
         <Label styleClass="titulo-seccion" text="Productos en Stock (Activos):" />
         <TableView fx:id="stockTableView" VBox.vgrow="ALWAYS">
@@ -25,74 +25,100 @@
             </placeholder>
         </TableView>
         <Separator orientation="HORIZONTAL" />
-        <Label styleClass="titulo-seccion" text="Detalles del Producto:">
-            <padding>
-                <Insets bottom="5.0" top="10.0" />
-            </padding>
-        </Label>
-        <GridPane hgap="10.0" vgap="8.0">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
+
+        <Region VBox.vgrow="ALWAYS" />
+        <VBox spacing="10.0" alignment="TOP_LEFT">
             <children>
-                <Label text="Código:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="stockCodigoField" promptText="Código" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0" />
-                <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <TextField fx:id="stockNombreField" promptText="Nombre del Producto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-                <Label text="P. Venta ($):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <TextField fx:id="stockPrecioField" promptText="Precio Venta" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Label text="P. Costo ($):" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                <TextField fx:id="stockCostoField" promptText="Precio Costo" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                <Label text="Stock Inicial:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <TextField fx:id="stockStockField" promptText="Stock Inicial" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <Label text="Stock Mínimo:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                <TextField fx:id="stockMinimoField" promptText="Stock Mínimo" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                <Label text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                <ComboBox fx:id="stockCategoriaComboBox" promptText="Seleccionar Categoría" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                <Label styleClass="titulo-seccion" text="Detalles del Producto:">
+                    <padding>
+                        <Insets bottom="5.0" top="10.0" />
+                    </padding>
+                </Label>
+                <VBox spacing="8.0" style="-fx-padding: 0 0 0 10;">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Código:" prefWidth="100.0"/>
+                                <TextField fx:id="stockCodigoField" promptText="Código" maxWidth="150.0" HBox.hgrow="NEVER"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Nombre:" prefWidth="100.0"/>
+                                <TextField fx:id="stockNombreField" promptText="Nombre del Producto" maxWidth="350.0" HBox.hgrow="ALWAYS"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="P. Venta ($):" prefWidth="100.0"/>
+                                <TextField fx:id="stockPrecioField" promptText="Precio Venta" maxWidth="150.0" HBox.hgrow="NEVER"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="P. Costo ($):" prefWidth="100.0"/>
+                                <TextField fx:id="stockCostoField" promptText="Precio Costo" maxWidth="150.0" HBox.hgrow="NEVER"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Stock Inicial:" prefWidth="100.0"/>
+                                <TextField fx:id="stockStockField" promptText="Stock Inicial" maxWidth="150.0" HBox.hgrow="NEVER"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Stock Mínimo:" prefWidth="100.0"/>
+                                <TextField fx:id="stockMinimoField" promptText="Stock Mínimo" maxWidth="150.0" HBox.hgrow="NEVER"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <children>
+                                <Label text="Categoría:" prefWidth="100.0"/>
+                                <ComboBox fx:id="stockCategoriaComboBox" promptText="Seleccionar Categoría" maxWidth="350.0" HBox.hgrow="ALWAYS"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox> <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <children>
+                    <Button fx:id="agregarButton" mnemonicParsing="false" onAction="#handleAgregarProducto" styleClass="boton-exito" text="➕ Agregar Nuevo" />
+                    <Button fx:id="modificarButton" mnemonicParsing="false" onAction="#handleModificarProducto" styleClass="boton-principal" text="✏️ Guardar Cambios" disable="true"/>
+                    <Button fx:id="desactivarButton" mnemonicParsing="false" onAction="#handleDesactivarProducto" styleClass="boton-peligro" text="🗑️ Desactivar" disable="true"/>
+                    <Button fx:id="limpiarButton" mnemonicParsing="false" onAction="#handleLimpiarFormulario" styleClass="boton-secundario" text="✨ Limpiar" />
+                </children>
+                <padding>
+                    <Insets top="15.0" />
+                </padding>
+            </HBox>
             </children>
-        </GridPane>
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
+        </VBox> <Separator orientation="HORIZONTAL" />
+
+        <VBox spacing="10.0" alignment="TOP_LEFT">
             <children>
-                <Button fx:id="agregarButton" mnemonicParsing="false" onAction="#handleAgregarProducto" styleClass="boton-exito" text="➕ Agregar Nuevo" />
-                <Button fx:id="modificarButton" mnemonicParsing="false" onAction="#handleModificarProducto" styleClass="boton-principal" text="✏️ Guardar Cambios" disable="true"/>
-                <Button fx:id="desactivarButton" mnemonicParsing="false" onAction="#handleDesactivarProducto" styleClass="boton-peligro" text="🗑️ Desactivar" disable="true"/>
-                <Button fx:id="limpiarButton" mnemonicParsing="false" onAction="#handleLimpiarFormulario" styleClass="boton-secundario" text="✨ Limpiar" />
+                <Label styleClass="titulo-seccion" text="Ajuste Manual de Stock (para producto seleccionado):">
+                    <padding>
+                        <Insets bottom="5.0" top="15.0" />
+                    </padding>
+                </Label>
+                <GridPane fx:id="ajusteGrid" disable="true" hgap="10.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="Cantidad (+/-):" GridPane.columnIndex="0" />
+                        <TextField fx:id="ajusteCantidadField" promptText="Cantidad (+/-)" GridPane.columnIndex="1" />
+                        <Label text="Motivo:" GridPane.columnIndex="2" />
+                        <TextField fx:id="ajusteMotivoField" promptText="Ej: Recepción, Rotura" GridPane.columnIndex="3" />
+                        <Button fx:id="ajustarStockButton" mnemonicParsing="false" onAction="#handleAjustarStock" styleClass="boton-principal" text="✔️ Aplicar Ajuste" GridPane.columnIndex="4" />
+                    </children>
+                </GridPane>
             </children>
-        </HBox>
-        <Separator orientation="HORIZONTAL" />
-        <Label styleClass="titulo-seccion" text="Ajuste Manual de Stock (para producto seleccionado):">
-            <padding>
-                <Insets bottom="5.0" top="15.0" />
-            </padding>
-        </Label>
-        <GridPane fx:id="ajusteGrid" disable="true" hgap="10.0" vgap="8.0">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0" />
-                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="200.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-                <Label text="Cantidad (+/-):" GridPane.columnIndex="0" />
-                <TextField fx:id="ajusteCantidadField" promptText="Cantidad (+/-)" GridPane.columnIndex="1" />
-                <Label text="Motivo:" GridPane.columnIndex="2" />
-                <TextField fx:id="ajusteMotivoField" promptText="Ej: Recepción, Rotura" GridPane.columnIndex="3" />
-                <Button fx:id="ajustarStockButton" mnemonicParsing="false" onAction="#handleAjustarStock" styleClass="boton-principal" text="✔️ Aplicar Ajuste" GridPane.columnIndex="4" />
-            </children>
-        </GridPane>
-    </children>
+        </VBox> </children>
 </VBox>

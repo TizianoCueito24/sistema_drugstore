@@ -30,8 +30,8 @@
                 <Separator orientation="HORIZONTAL" />
                 <VBox alignment="CENTER" spacing="8.0">
                     <children>
-                        <Button fx:id="confirmarBtn" mnemonicParsing="false" onAction="#handleConfirmarVenta" styleClass="boton-exito" text="✅ CONFIRMAR VENTA" maxWidth="1.7976931348623157E308"/>
-                        <Button fx:id="limpiarTicketBtn" mnemonicParsing="false" onAction="#handleLimpiarTicket" styleClass="boton-peligro" text="❌ Limpiar Ticket" maxWidth="1.7976931348623157E308"/>
+                        <Button fx:id="confirmarBtn" mnemonicParsing="false" onAction="#handleConfirmarVenta" styleClass="boton-exito" text="CONFIRMAR VENTA" maxWidth="1.7976931348623157E308"/>
+                        <Button fx:id="limpiarTicketBtn" mnemonicParsing="false" onAction="#handleLimpiarTicket" styleClass="boton-peligro" text="Limpiar Ticket" maxWidth="1.7976931348623157E308"/>
                     </children>
                 </VBox>
             </children>
@@ -45,14 +45,15 @@
                         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <Label text="Escanear/Ingresar Código:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <TextField fx:id="codigoInput" promptText="Código de barras..." onAction="#handleCodigoEntered" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label text="Buscar por Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <TextField fx:id="nombreSearchField" promptText="Escriba parte del nombre..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Escanear/Ingresar Código:" styleClass="label-venta-escaner" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="codigoInput" id="codigoInput" promptText="Código de barras..." onAction="#handleCodigoEntered" maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="0"   />
+
+                        <Label text="Buscar por Nombre:" styleClass="label-venta-escaner" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="nombreSearchField" id="nombreSearchField" promptText="Escriba parte del nombre..." maxWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     </children>
                 </GridPane>
                 <ListView fx:id="searchResultsListView" managed="false" prefHeight="180.0" visible="false" VBox.vgrow="SOMETIMES"
