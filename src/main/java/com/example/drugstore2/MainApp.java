@@ -17,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
+import javafx.scene.layout.Pane;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -48,6 +48,7 @@ public class MainApp extends Application {
 
         // --- Cargar Pestañas desde FXML ---
         try {
+            // ... (llamadas a loadTab sin cambios) ...
             loadTab(tabPane, "🛒 Venta con Escáner", "/com/example/venta-escaner-view.fxml", VentaEscanerController.class);
             loadTab(tabPane, "⌨️ Venta Manual", "/com/example/venta-manual-view.fxml", VentaManualController.class);
             loadTab(tabPane, "📦 Gestión de Stock", "/com/example/stock-view.fxml", StockController.class);
@@ -59,32 +60,46 @@ public class MainApp extends Application {
         } catch (IOException e) {
             e.printStackTrace();
             AlertUtil.showAlert(Alert.AlertType.ERROR, "Error Crítico de Carga",
-                    "No se pudo cargar una de las pestañas (FXML).\n" + e.getMessage());
+                    "No se pudo cargar una de las pestañas (FXML).\nVerifica que la ruta del archivo FXML sea correcta en MainApp.java.\nDetalle: " + e.getMessage());
+            return;
+        } catch (Exception e) { // Captura más genérica por si el controlador falla al inicializar
+            e.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Error Crítico Inesperado",
+                    "Ocurrió un error al cargar o inicializar las pestañas.\n" + e.getMessage());
             return;
         }
 
         // --- Configuración de Escena y Stage ---
         BorderPane mainLayout = createLayoutWithBranding(tabPane);
-        Scene scene = new Scene(mainLayout, 1050, 750); // Ajusta tamaño si es necesario
 
-        // --- Cargar CSS ---
+        // MODIFICACIÓN: Crear la escena SIN tamaño fijo inicial
+        Scene scene = new Scene(mainLayout);
+        // Alternativa (menos común): Ajustar al tamaño preferido inicial
+        // Scene scene = new Scene(mainLayout);
+        // primaryStage.setScene(scene); // Poner la escena ANTES de ajustar
+        // primaryStage.sizeToScene();
+
+        // --- Cargar CSS (sin cambios) ---
         try {
             String estilosCSS = getClass().getResource("/com/example/estilos.css").toExternalForm();
             String estadistCSS = getClass().getResource("/com/example/estadist.css").toExternalForm();
+            // Verificar que las rutas no sean null antes de añadirlas
             if (estilosCSS != null) scene.getStylesheets().add(estilosCSS);
+            else System.err.println("Advertencia: No se encontró /com/example/estilos.css");
+
             if (estadistCSS != null) scene.getStylesheets().add(estadistCSS);
-            System.out.println("CSS cargados.");
-        } catch (NullPointerException e) {
-            System.err.println("Advertencia: No se pudo cargar algún archivo CSS. Verifica las rutas en /resources. " + e.getMessage());
+            else System.err.println("Advertencia: No se encontró /com/example/estadist.css");
+
+            System.out.println("Estilos CSS aplicados.");
         } catch (Exception e) {
             System.err.println("Error inesperado al cargar CSS: " + e.getMessage());
+            e.printStackTrace(); // Imprimir traza completa
         }
 
-
         primaryStage.setTitle("Drugstore System");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(scene); // Asegurarse que la escena se establece
         primaryStage.setOnCloseRequest(e -> closeServices());
-        primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true); // Maximizar sigue estando bien
         primaryStage.show();
     }
 
@@ -127,49 +142,46 @@ public class MainApp extends Application {
     // Método genérico para cargar una pestaña desde FXML
     private <T> void loadTab(TabPane tabPane, String tabTitle, String fxmlPath, Class<T> controllerClass) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Node content = loader.load(); // Carga FXML y crea la vista
-        T controller = loader.getController(); // Obtiene la instancia del controlador
+        // Cambiar a Pane o Parent para más generalidad, Node puede ser muy básico
+        Pane content = loader.load(); // Usar Pane o Parent
+        T controller = loader.getController();
 
-        // --- Inyectar dependencias en el controlador ---
-        // (Esto podría mejorarse con un framework de inyección)
         injectServices(controller);
 
         Tab tab = new Tab(tabTitle, content);
         tabPane.getTabs().add(tab);
 
         // Configurar acciones al seleccionar la pestaña (si es necesario)
-        // Ejemplo: Refrescar datos en la pestaña de Stock
         if (controller instanceof StockController stockCtrl) {
             tab.setOnSelectionChanged(event -> {
                 if (tab.isSelected()) {
+                    System.out.println("Pestaña Stock seleccionada, refrescando...");
                     stockCtrl.refrescarTablaProductos();
                 }
             });
-        }
-        // Ejemplo: Actualizar estado de caja
-        else if (controller instanceof CajaController cajaCtrl) {
+        } else if (controller instanceof CajaController cajaCtrl) {
             tab.setOnSelectionChanged(event -> {
                 if (tab.isSelected()) {
+                    System.out.println("Pestaña Caja seleccionada, actualizando UI...");
                     cajaCtrl.actualizarEstadoCajaUI();
                 }
             });
-        }
-        // Ejemplo: Actualizar estadísticas
-        else if (controller instanceof EstadisticasController estCtrl) {
+        } else if (controller instanceof EstadisticasController estCtrl) {
             tab.setOnSelectionChanged(event -> {
                 if (tab.isSelected()) {
+                    System.out.println("Pestaña Estadísticas seleccionada, actualizando...");
                     estCtrl.actualizarEstadisticas();
                 }
             });
-        }
-        // Ejemplo: Recargar historial (si se implementa recarga en el controlador)
-        else if (controller instanceof HistorialVentasController histCtrl) {
+        } else if (controller instanceof HistorialVentasController histCtrl) {
             tab.setOnSelectionChanged(event -> {
                 if (tab.isSelected()) {
-                    // histCtrl.recargarHistorial(); // Si se añade este método
+                    System.out.println("Pestaña Historial seleccionada, recargando...");
+                    histCtrl.recargarHistorial(); // Llama al método público del controlador
                 }
             });
         }
+        // Puedes añadir más `else if` para otras pestañas si necesitan refrescarse
     }
 
     // Método para inyectar servicios en los controladores (simplificado)
@@ -181,23 +193,19 @@ public class MainApp extends Application {
             c.setVentaService(ventaService);
             c.setVentaStateService(ventaStateService);
         } else if (controller instanceof VentaManualController c) {
-            // VentaManual no necesita acceso directo a inventario/venta service
-            c.setVentaStateService(ventaStateService);
+            c.setVentaStateService(ventaStateService); // Solo necesita estado
         } else if (controller instanceof HistorialVentasController c) {
             c.setVentaService(ventaService);
         } else if (controller instanceof EstadisticasController c) {
             c.setEstadisticasService(estadisticasService);
-            c.setVentaService(ventaService); // Para exportar ventas
-            c.setInventarioService(inventarioService); // Para exportar stock
-        } else if (controller instanceof DevolucionesController c) {
+            c.setVentaService(ventaService);
             c.setInventarioService(inventarioService);
-        } else if (controller instanceof CajaController c) {
+        } else if (controller instanceof DevolucionesController c) { // Añadido
+            c.setInventarioService(inventarioService);
+        } else if (controller instanceof CajaController c) { // Añadido
             c.setCajaService(cajaService);
         }
-        else if (controller instanceof DevolucionesController c) {
-            c.setInventarioService(inventarioService); // <-- Añade esta línea
-        }
-
+        // Añadir más controladores aquí si necesitan servicios
     }
 
 
